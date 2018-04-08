@@ -46,14 +46,14 @@ public class GoodController {
 	public String test1() {
 		return "/GoodList";
 	}
-	@RequestMapping("/getM_ID")
+	@RequestMapping("/getG_ID")
 	@ResponseBody
 	public String getG_ID() {
 		return g_ID;
 	}
 	@RequestMapping("/setG_ID")
 	@ResponseBody
-	public String setG_ID(String g_ID) {
+	public String setG_ID(@RequestBody String g_ID) {
 		this.g_ID = g_ID;
 		System.out.println(g_ID);
 		return "{\"result\":\"success\"}";
@@ -67,7 +67,7 @@ public class GoodController {
 	
 	@RequestMapping("/getGoods")
 	@ResponseBody
-	public List<Good> getGoodList(String m_ID){
+	public List<Good> getGoodList(@RequestBody String m_ID){
 		List<Good> goods = goodService.getGoods(m_ID);
 		return goods;
 	}
