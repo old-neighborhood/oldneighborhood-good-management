@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -40,27 +41,15 @@ import sun.misc.BASE64Decoder;
 public class GoodController {
 	@Resource
 	private GoodService goodService;
-	private String g_ID="";
 	@RequestMapping("/")
 	@ResponseBody
 	public String test1() {
 		return "/GoodList";
 	}
-	@RequestMapping("/getG_ID")
-	@ResponseBody
-	public String getG_ID() {
-		return g_ID;
-	}
-	@RequestMapping("/setG_ID")
-	@ResponseBody
-	public String setG_ID(@RequestBody String g_ID) {
-		this.g_ID = g_ID;
-		System.out.println(g_ID);
-		return "{\"result\":\"success\"}";
-	}
+	
 	@RequestMapping("/getGood")
 	@ResponseBody
-	public Good getGood() {
+	public Good getGood(@RequestBody String g_ID) {
 		
 		return goodService.getGood(g_ID);
 	}
@@ -79,19 +68,19 @@ public class GoodController {
 				reqMap.get("g_price").toString()+" "+
 				reqMap.get("g_amount").toString()+" "+
 				reqMap.get("g_intro").toString()+" "+
-				g_ID);
+				reqMap.get("g_ID").toString());
 		goodService.modGood(
 				reqMap.get("g_name").toString(),
 				reqMap.get("g_price").toString(),
 				reqMap.get("g_amount").toString(),
 				reqMap.get("g_intro").toString(),
-				g_ID
+				reqMap.get("g_ID").toString()
 				);
 		
 		if(reqMap.get("g_image")!=null&&reqMap.get("g_image").toString().length()>1000) {
 			String imgStr = reqMap.get("g_image").toString();
 			System.out.println("base64:"+imgStr);
-			String path = "C:\\pc\\workspace\\oldneighborhood-validate\\src\\main\\resources\\img\\good\\"+g_ID+".jpg";
+			String path = "C:\\pc\\workspace\\oldneighborhood-frontUI\\src\\main\\resources\\img\\good\\"+reqMap.get("g_ID").toString()+".jpg";
 			imgStr = imgStr.replaceAll("data:image/jpeg;base64,", ""); 
 			BASE64Decoder decoder = new BASE64Decoder();
 			try {
@@ -122,20 +111,12 @@ public class GoodController {
 	@ResponseBody
 	public String addGood(@RequestBody Map<String,Object> reqMap) {
 		//System.out.println(key);
-		String m_ID = goodService.getG_ID();
-		m_ID = m_ID.replace("GD","");
-		int num = Integer.parseInt(m_ID);
-		num++;
-		String ID = "GD"; 
-		for(int i=String.valueOf(num).length();i<8;i++) {
-			ID+="0";
-		}
-		ID+=num;
+		String ID = UUID.randomUUID().toString().replaceAll("-", "");
 		System.out.println(reqMap.get("g_image").toString());
 		
 		String imgStr = reqMap.get("g_image").toString();
 		System.out.println("base64:"+imgStr);
-		String path = "C:\\pc\\workspace\\oldneighborhood-validate\\src\\main\\resources\\img\\good\\"+ID+".jpg";
+		String path = "C:\\pc\\workspace\\oldneighborhood-frontUI\\src\\main\\resources\\img\\good\\"+ID+".jpg";
 		imgStr = imgStr.replaceAll("data:image/jpeg;base64,", ""); 
 		BASE64Decoder decoder = new BASE64Decoder();
 		try {
@@ -173,7 +154,7 @@ public class GoodController {
 	}
 	@RequestMapping("/deleteGood")
 	@ResponseBody
-	public String deleteGood() {
+	public String deleteGood(@RequestBody String g_ID) {
 		System.out.println(g_ID);
 		goodService.delGood(g_ID);
 		return "{\"result\":\"success\"}";

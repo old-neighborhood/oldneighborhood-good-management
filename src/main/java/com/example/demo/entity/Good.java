@@ -80,6 +80,7 @@ public class Good implements Serializable{
 	private String g_image;
 	@NonNull
 	private String g_type;
+	@NonNull
 	private String g_intro;
 	@Column(columnDefinition = "timestamp not null default now()", updatable = false)
 	private Timestamp g_date;
